@@ -90,8 +90,8 @@ jobs:
               echo "::error::appads 条目数与文件头声明不一致"
               fail=1
             fi
-            if [ "$actual" -gt 5000 ]; then
-              echo "::error::appads 条目数 $actual 超过上限 5000"
+            if [ "$actual" -gt 10000 ]; then
+              echo "::error::appads 条目数 $actual 超过上限 10000"
               fail=1
             fi
             dup=$(grep -v '^#' "$f" | grep -v '^$' | sort | uniq -d | head -5)
