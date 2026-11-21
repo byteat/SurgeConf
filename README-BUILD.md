@@ -108,7 +108,7 @@ git add -A && git commit && git push
 
 第 2 层只挑两类：隐私/归因 SDK（appsflyer、adjust、branch、umeng、bugly、jpush…）与常见广告交易平台（doubleclick、googlesyndication、taboola、criteo…）。该文件有 10 万条，整体引入会远超上限且绝大多数与 App 无关。
 
-条目总数上限由 `MAX_ENTRIES` 控制，当前 **5000**。核心层（前两层）永远全保留，剩余名额从第 3 层按「国内平台标识优先」补足。
+条目总数上限由 `MAX_ENTRIES` 控制，当前 **10000**。核心层（前两层）永远全保留，剩余名额从第 3 层按「国内平台标识优先」补足。
 
 ### 处理时踩过的坑
 
@@ -145,7 +145,9 @@ DOMAIN-SET 只接受域名。混进一条 `23.224.199.74` 会让**整份文件�
 
 ### 自动更新
 
-`.github/workflows/update-appads.yml`，每天 UTC 18:30（北京 02:30）跑一次，也可手动 `workflow_dispatch`。
+`.github/workflows/update-rules.yml`，每天 UTC 18:30（北京 02:30）跑一次，也可手动 `workflow_dispatch`。
+
+这个 workflow 同时覆盖两套内容：App 广告清单，以及 `build.py` 生成的 5 份合并规则（proxy/direct/ai/两条 IP 段）。
 
 流程是「先 `--check` 比对 → 有变化才重新生成 → 校验 → 提交」，**无变化不产生空提交**。提交前的校验项：条目数与文件头声明一致、不超上限、无重复、无 IP 条目。
 
@@ -163,8 +165,7 @@ python3 scripts/build_appads.py             # 直接重新生成
 |---|---|
 | 原来 23 万条网页拦截 | 25,970,336 |
 | 933 条（App-only 初版） | 24,643,232 |
-| 7,176 条（上限 1 万时） | 25,167,520 |
-| 5,000 条（当前） | 待测 |
+| 7,176 条（当前，上限 1 万） | 25,167,520 |
 
 **结论**：换这份清单省不下多少内存（约 0.8 MiB），收益在「拦截范围贴合 App」而不在性能。早先估算的「省 20 MB」不成立，`domainset` 索引之外的固定开销（virtual-ip、模块脚本）占大头。
 
