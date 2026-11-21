@@ -1,0 +1,8 @@
+{
+  "apple_intelligence": [
+    "# 说明：上游 6 条，其中哨兵 7h15...skk.moe 已在上方 ai 组收录，此处不重复。",
+    "# 注意：apple-relay.apple.com 与 gspe1-ssl.ls.apple.com 在 profile 中被",
+    "#      DOMAIN-SUFFIX,apple.com,DIRECT 这条更靠前的规则先命中，",
+    "#      除非把本组规则集移到该行之前，否则补了也不生效。"
+  ]
+}

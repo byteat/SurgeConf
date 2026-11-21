@@ -1,13 +1,14 @@
 # 本文件由脚本从上游规则集合并去重生成，请勿手工编辑。
+# 生成脚本：scripts/build.py    重新生成：python3 scripts/build.py
 # 合并原则：按本地 [Rule] 的匹配优先级排列；重复条目只保留最先命中的那条。
 # 上游来源与条目数见各分组注释。
 # 格式：DOMAIN-SET 纯域名列表（. 前缀 = 含子域，无前缀 = 精确匹配）
 # 上游：domainset/reject + domainset/reject_extra
-# 去重：剔除被更短后缀覆盖的条目 582 条（后缀）/36 条（精确）
+# 去重：剔除完全重复 1 条；剔除被更短后缀覆盖的条目 618 条
 # 保留：上游哨兵域名 7h15.ru1353t.1s.m4d3.by.5ukk4w.skk.moe
 # 条目数：233767
 
-# ==== 来自 domainset/reject（148084 条）====
+# ==== 来自 domainset/reject.conf（149822 条）====
 .data
 .24.eu
 .51.la
@@ -148093,7 +148094,7 @@
 .ei-api.gwy.easyjet.com.businessrelationshipregistrationkey.net.easyjet.com
 .opentelemetry-collector.shared-services.us-east-1.general.prod.wildlife.io
 
-# ==== 来自 domainset/reject_extra（84548 条）====
+# ==== 来自 domainset/reject_extra.conf（84564 条）====
 .4.fo
 .p.de
 .21.co
