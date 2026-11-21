@@ -18,7 +18,8 @@ Surge 规则集合并生成器
 
 输出文件:
   proxy.merged.conf          RULE-SET，代理域名
-  direct.merged.conf         RULE-SET，直连域名（含上游自带 IP 规则）
+  direct-early.merged.conf   RULE-SET，直连域名（前段，必须在 Ai 之前）
+  direct-late.merged.conf    RULE-SET，直连域名（后段，必须在 global 之后）
   ai.merged.conf             RULE-SET，AI 服务
   ip-telegram.ruleset.conf   RULE-SET，Telegram IP 段
   ip-domestic.ruleset.conf   RULE-SET，国内 IP 段
@@ -42,9 +43,22 @@ REJECT_DOMAINSET = ["domainset/reject.conf", "domainset/reject_extra.conf"]
 REJECT_EXTRA = ["non_ip/reject.conf"]          # 非域名型（KEYWORD/WILDCARD/AND/IP-CIDR）
 REJECT_NO_DROP = ["non_ip/reject-no-drop.conf"]
 PROXY_SRC = ["domainset/cdn.conf", "non_ip/cdn.conf", "non_ip/telegram.conf", "non_ip/global.conf"]
-DIRECT_SRC = ["domainset/apple_cdn.conf", "non_ip/microsoft_cdn.conf", "non_ip/apple_cn.conf",
-              "Nobyda/Script/master/Surge/WeChat.list",
-              "non_ip/domestic.conf", "non_ip/direct.conf", "non_ip/lan.conf"]
+
+# DIRECT 组必须拆成两份文件，不能合并成一份。
+#
+# 原因：profile 原本的顺序是
+#   apple_cdn(131) microsoft(133) apple_cn(137) WeChat(143)   ← 在 Ai 之前
+#   Ai(139) cdn(143) telegram(147) global(151)
+#   domestic(154) direct(157) lan(164)                        ← 在 global 之后
+# 也就是说，「直连段」被中间的 Ai/cdn/global 分成了前后两组。
+# 合成一份后，无论放哪个位置都会有一组跨越中间段，导致策略翻转：
+#   放前面 → global 里 19 个域名（PT 站、blizzard.com 等）从 PROXY 变 DIRECT
+#   放后面 → apple_cdn 的 160 条（mzstatic.com 等）从 DIRECT 变 PROXY
+# 所以拆成 early（Ai 之前）和 late（global 之后）两份，顺序完全还原。
+DIRECT_EARLY_SRC = ["domainset/apple_cdn.conf", "non_ip/microsoft_cdn.conf",
+                    "non_ip/apple_cn.conf",
+                    "Nobyda/Script/master/Surge/WeChat.list"]
+DIRECT_LATE_SRC = ["non_ip/domestic.conf", "non_ip/direct.conf", "non_ip/lan.conf"]
 AI_SRC = ["non_ip/ai.conf", "non_ip/apple_intelligence.conf"]
 IP_TG_SRC = ["ip/telegram.conf"]
 IP_CN_SRC = ["ip/domestic.conf"]
@@ -126,6 +140,16 @@ def rule_key(line: str) -> str:
     注意：不能按 // 切分——URL-REGEX 里含 http:// 会被截断成 http:，
     导致不同的 URL 规则被误判为重复。"""
     return line.strip()
+
+
+def rule_domain(line: str) -> str | None:
+    """取规则行的域名部分；非域名型规则返回 None。"""
+    parts = [x.strip() for x in line.split(",")]
+    if len(parts) < 2:
+        return None
+    if parts[0].upper() in ("DOMAIN", "DOMAIN-SUFFIX"):
+        return parts[1].lower().lstrip(".")
+    return None
 
 
 def domain_of(line: str):
@@ -231,8 +255,14 @@ def load_notes() -> dict:
 
 
 def build_ruleset(sources: list[str], title: str,
-                  keep_ip: bool, note: str = "") -> str:
-    """通用 RULE-SET 生成：按来源顺序合并，跨来源去重（保留先出现的）。"""
+                  keep_ip: bool, note: str = "",
+                  exclude: set[str] | None = None) -> str:
+    """通用 RULE-SET 生成：按来源顺序合并，跨来源去重（保留先出现的）。
+
+    exclude：需要剔除的域名集合。用于解决「profile 里靠前的规则集能够命中、
+    但合并后位置改变会导致策略翻转」的冲突——这些条目在合并文件里删掉，
+    让它们自然落到 profile 中真正该命中的那条规则上。
+    """
     seen = set()
     blocks = []
     total = 0
@@ -244,6 +274,10 @@ def build_ruleset(sources: list[str], title: str,
             k = rule_key(ln)
             if k in seen:
                 continue
+            if exclude:
+                dom = rule_domain(ln)
+                if dom and dom in exclude:
+                    continue
             seen.add(k)
             kept.append(ln)
         total += len(kept)
@@ -298,8 +332,10 @@ def build_all() -> dict[str, str]:
     wechat = SIDE_URLS["nobyda/wechat"]
     files = {}
     files["proxy.merged.conf"] = build_ruleset(PROXY_SRC, "PROXY 组", True)
-    files["direct.merged.conf"] = build_ruleset(
-        DIRECT_SRC[:-1] + [wechat], "DIRECT 组", True)
+    files["direct-early.merged.conf"] = build_ruleset(
+        DIRECT_EARLY_SRC, "DIRECT 组（前段：Ai 之前的直连规则）", True)
+    files["direct-late.merged.conf"] = build_ruleset(
+        DIRECT_LATE_SRC, "DIRECT 组（后段：global 之后的直连规则）", True)
     files["ai.merged.conf"] = build_ruleset(AI_SRC, "Ai 组", True)
     files["ip-telegram.ruleset.conf"] = build_ip_file(IP_TG_SRC, "Telegram IP 段", "PROXY")
     files["ip-domestic.ruleset.conf"] = build_ip_file(IP_CN_SRC, "国内 IP 段", "DIRECT")
