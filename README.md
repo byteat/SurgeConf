@@ -40,5 +40,3 @@ python3 scripts/build.py --check      # 比对，不写入
 ```
 
 自动更新：`.github/workflows/update-rules.yml`，每天 UTC 18:30 运行，无变化时跳过提交。
-
-构建细节见 `README-BUILD.md`。
