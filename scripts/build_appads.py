@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "rules"
 TARGET = OUT / "appads.domainset.txt"
 
-MAX_ENTRIES = 10000
+MAX_ENTRIES = 5000
 
 SOURCES = {
     "mobile": "https://filters.adtidy.org/ios/filters/11.txt",
