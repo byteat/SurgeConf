@@ -44,7 +44,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "rules"
 TARGET = OUT / "appads.domainset.txt"
 
-MAX_ENTRIES = 5000
+MAX_ENTRIES = 10000
 
 SOURCES = {
     "mobile": "https://filters.adtidy.org/ios/filters/11.txt",
@@ -117,6 +117,22 @@ MUST_NOT_BLOCK_EXTRA = {
     "plugin.mobopay.baidu.com",  # 百度支付插件
 }
 
+# Apple 域名整域排除（含全部子域）。
+# 与 MUST_NOT_BLOCK 的区别：那里是精确匹配，只排除整站本身，
+# 因为像 pos.baidu.com 这种广告子域是应该拦的；
+# 而 Apple 相关一律不动（用户明确要求），子域也要排除。
+APPLE_SUFFIXES = (".apple.com", ".icloud.com", ".mzstatic.com")
+
+def is_excluded(d):
+    """判断域名是否必须排除。"""
+    if d in MUST_NOT_BLOCK or d in MUST_NOT_BLOCK_EXTRA:
+        return True
+    if d in ("apple.com", "icloud.com", "mzstatic.com"):
+        return True
+    if d.endswith(APPLE_SUFFIXES):
+        return True
+    return False
+
 DOMAIN_RE = re.compile(
     r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$"
 )
@@ -167,7 +183,7 @@ def parse(text):
             continue  # DOMAIN-SET 不接受 IP
         except ValueError:
             pass
-        if d in MUST_NOT_BLOCK or d in MUST_NOT_BLOCK_EXTRA:
+        if is_excluded(d):
             continue
         good.add(d)
     return good, scoped
