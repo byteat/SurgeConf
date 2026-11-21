@@ -66,8 +66,8 @@ jobs:
             exit 1
           fi
           # 不得超过上限
-          if [ "$actual" -gt 10000 ]; then
-            echo "::error::条目数 $actual 超过上限 10000"
+          if [ "$actual" -gt 5000 ]; then
+            echo "::error::条目数 $actual 超过上限 5000"
             exit 1
           fi
           # 不得含重复
