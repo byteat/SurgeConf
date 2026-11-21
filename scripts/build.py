@@ -17,9 +17,6 @@ Surge 规则集合并生成器
   4. 哨兵域名（skk.moe 标记）保留，用于验证规则是否生效。
 
 输出文件:
-  reject.domainset.txt       DOMAIN-SET，拦截域名（后缀 + 精确两段）
-  reject-extra.ruleset.conf  RULE-SET，DOMAIN-SET 无法表达的拦截规则
-  reject-no-drop.ruleset.conf RULE-SET，REJECT-NO-DROP 策略
   proxy.merged.conf          RULE-SET，代理域名
   direct.merged.conf         RULE-SET，直连域名（含上游自带 IP 规则）
   ai.merged.conf             RULE-SET，AI 服务
@@ -300,10 +297,6 @@ def build_ip_file(sources: list[str], title: str, policy: str) -> str:
 def build_all() -> dict[str, str]:
     wechat = SIDE_URLS["nobyda/wechat"]
     files = {}
-    files["reject.domainset.txt"] = build_reject_domainset()
-    files["reject-no-drop.ruleset.conf"] = build_ruleset(
-        REJECT_NO_DROP, "REJECT-NO-DROP 组", True,
-        note="用途：静默丢弃，不回 RST，与 REJECT 是不同策略，不能并成一份。")
     files["proxy.merged.conf"] = build_ruleset(PROXY_SRC, "PROXY 组", True)
     files["direct.merged.conf"] = build_ruleset(
         DIRECT_SRC[:-1] + [wechat], "DIRECT 组", True)
