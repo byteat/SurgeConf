@@ -24,6 +24,9 @@ Surge 规则集合并生成器
   ip-telegram.ruleset.conf   RULE-SET，Telegram IP 段
   ip-domestic.ruleset.conf   RULE-SET，国内 IP 段
   local.merged.conf          RULE-SET，本地手工维护的拦截条目（源自 scripts/local.src.conf）
+  local-reject.merged.conf   RULE-SET，本地单条规则 REJECT（源自 scripts/local-reject.src.conf）
+  local-direct.merged.conf   RULE-SET，本地单条规则 DIRECT（源自 scripts/local-direct.src.conf）
+  local-proxy.merged.conf    RULE-SET，本地单条规则 PROXY（源自 scripts/local-proxy.src.conf）
 """
 
 import argparse
@@ -66,6 +69,12 @@ IP_CN_SRC = ["ip/domestic.conf"]
 
 # 本地手工维护的源（不经上游 fetch，直接读 scripts/local.src.conf）
 LOCAL_SRC = ROOT / "scripts" / "local.src.conf"
+# 单条规则统一自托管：按策略分成三份，profile 用 RULE-SET 引用
+LOCAL_SOURCES = {
+    "local-reject.merged.conf": "scripts/local-reject.src.conf",
+    "local-direct.merged.conf": "scripts/local-direct.src.conf",
+    "local-proxy.merged.conf": "scripts/local-proxy.src.conf",
+}
 
 # wechat 走 NobyDa 的仓库，不在 ruleset.skk.moe 下
 SIDE_URLS = {
@@ -315,22 +324,25 @@ def build_ruleset(sources: list[str], title: str,
     return "\n".join(out).rstrip() + "\n"
 
 
-def build_local_file() -> str:
-    """把手工维护的本地条目套上统一头，产出 rules/local.merged.conf。
+def build_local_file(rel_src: str = "scripts/local.src.conf", note: str = "") -> str:
+    """把手工维护的本地条目套上统一头，产出一份 RULE-SET。
 
+    rel_src：源文件的仓库相对路径。
+    note：写入文件头的一行说明。
     源文件不存在时返回空内容，避免整个 build 崩掉。
     """
-    if not LOCAL_SRC.exists():
+    src = ROOT / rel_src
+    if not src.exists():
         return ""
-    data = [l.rstrip() for l in LOCAL_SRC.read_text(encoding="utf-8").splitlines()
+    data = [l.rstrip() for l in src.read_text(encoding="utf-8").splitlines()
             if l.strip() and not l.lstrip().startswith("#")]
     out = [
-        "# 本文件由脚本生成，请勿手工编辑；要改条目请改源文件 scripts/local.src.conf。",
+        "# 本文件由脚本生成，请勿手工编辑；要改条目请改源文件 " + rel_src + "。",
         "# 生成脚本：scripts/build.py    重新生成：python3 scripts/build.py",
-        "# 本文件承载无法放进 DOMAIN-SET 的非域名型规则（URL-REGEX 等）。",
-        f"# 条目数：{len(data)}",
-        "",
     ]
+    if note:
+        out.append("# " + note)
+    out += [f"# 条目数：{len(data)}", ""]
     out.extend(data)
     return "\n".join(out).rstrip() + "\n"
 
@@ -363,7 +375,11 @@ def build_all() -> dict[str, str]:
     files["ai.merged.conf"] = build_ruleset(AI_SRC, "Ai 组", True)
     files["ip-telegram.ruleset.conf"] = build_ip_file(IP_TG_SRC, "Telegram IP 段", "PROXY")
     files["ip-domestic.ruleset.conf"] = build_ip_file(IP_CN_SRC, "国内 IP 段", "DIRECT")
-    files["local.merged.conf"] = build_local_file()
+    files["local.merged.conf"] = build_local_file(
+        note="本文件承载无法放进 DOMAIN-SET 的非域名型规则（URL-REGEX 等）。")
+    for out_name, src in LOCAL_SOURCES.items():
+        files[out_name] = build_local_file(
+            rel_src=src, note="单条规则统一自托管，策略列与文件名一致。")
     return files
 
 
