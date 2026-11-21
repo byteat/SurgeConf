@@ -116,7 +116,8 @@ jobs:
           # 合并规则：每份都不能为空，也不能含空行断层
           # 必须与 build.py 的产出清单逐一对应，少列一份就等于该份从未被校验
           for g in proxy.merged.conf direct-early.merged.conf direct-late.merged.conf \
-                   ai.merged.conf ip-telegram.ruleset.conf ip-domestic.ruleset.conf; do
+                   ai.merged.conf ip-telegram.ruleset.conf ip-domestic.ruleset.conf \
+                   local.merged.conf; do
             p="rules/$g"
             if [ ! -f "$p" ]; then
               echo "::error::$g 不存在"
