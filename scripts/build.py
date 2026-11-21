@@ -23,6 +23,7 @@ Surge 规则集合并生成器
   ai.merged.conf             RULE-SET，AI 服务
   ip-telegram.ruleset.conf   RULE-SET，Telegram IP 段
   ip-domestic.ruleset.conf   RULE-SET，国内 IP 段
+  local.merged.conf          RULE-SET，本地手工维护的拦截条目（源自 scripts/local.src.conf）
 """
 
 import argparse
@@ -62,6 +63,9 @@ DIRECT_LATE_SRC = ["non_ip/domestic.conf", "non_ip/direct.conf", "non_ip/lan.con
 AI_SRC = ["non_ip/ai.conf", "non_ip/apple_intelligence.conf"]
 IP_TG_SRC = ["ip/telegram.conf"]
 IP_CN_SRC = ["ip/domestic.conf"]
+
+# 本地手工维护的源（不经上游 fetch，直接读 scripts/local.src.conf）
+LOCAL_SRC = ROOT / "scripts" / "local.src.conf"
 
 # wechat 走 NobyDa 的仓库，不在 ruleset.skk.moe 下
 SIDE_URLS = {
@@ -311,6 +315,26 @@ def build_ruleset(sources: list[str], title: str,
     return "\n".join(out).rstrip() + "\n"
 
 
+def build_local_file() -> str:
+    """把手工维护的本地条目套上统一头，产出 rules/local.merged.conf。
+
+    源文件不存在时返回空内容，避免整个 build 崩掉。
+    """
+    if not LOCAL_SRC.exists():
+        return ""
+    data = [l.rstrip() for l in LOCAL_SRC.read_text(encoding="utf-8").splitlines()
+            if l.strip() and not l.lstrip().startswith("#")]
+    out = [
+        "# 本文件由脚本生成，请勿手工编辑；要改条目请改源文件 scripts/local.src.conf。",
+        "# 生成脚本：scripts/build.py    重新生成：python3 scripts/build.py",
+        "# 本文件承载无法放进 DOMAIN-SET 的非域名型规则（URL-REGEX 等）。",
+        f"# 条目数：{len(data)}",
+        "",
+    ]
+    out.extend(data)
+    return "\n".join(out).rstrip() + "\n"
+
+
 def build_ip_file(sources: list[str], title: str, policy: str) -> str:
     out = [f"# {title}（RULE-SET 格式）"]
     for src in sources:
@@ -339,6 +363,7 @@ def build_all() -> dict[str, str]:
     files["ai.merged.conf"] = build_ruleset(AI_SRC, "Ai 组", True)
     files["ip-telegram.ruleset.conf"] = build_ip_file(IP_TG_SRC, "Telegram IP 段", "PROXY")
     files["ip-domestic.ruleset.conf"] = build_ip_file(IP_CN_SRC, "国内 IP 段", "DIRECT")
+    files["local.merged.conf"] = build_local_file()
     return files
 
 
