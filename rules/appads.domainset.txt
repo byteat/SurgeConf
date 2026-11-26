@@ -1,14 +1,14 @@
 # iOS App 专用广告拦截清单（DOMAIN-SET 格式，后缀匹配含子域）
 # 本文件由 scripts/build_appads.py 自动生成，请勿手工编辑。
 # 重新生成：python3 scripts/build_appads.py
-# 生成时间：2026-11-25T02:43:16Z
+# 生成时间：2026-11-26T01:54:45Z
 #
 # 来源分层（按优先级）：
 #   1. AdGuard Mobile Ads filter — filters/11.txt（全量收录，共 933 条）
 #      移动端第三方广告网络，本清单的基础层
 #   2. AdGuard Tracking Protection — filters/3.txt（只取子集，未整体引入）
 #      隐私/归因 SDK 160 条；常见广告交易平台 69 条
-#   3. AdGuard Chinese filter — filters/224.txt（国内广告地址，取用 5745 条补足上限）
+#   3. AdGuard Chinese filter — filters/224.txt（国内广告地址，取用 5758 条补足上限）
 #
 # 处理规则：
 #   - 只接受 ||domain^ 与 ||domain^$third-party 形式；丢弃 URL/路径/通配规则
@@ -18,7 +18,7 @@
 #   - 剔除 Apple 域名与已知会打断支付/登录的功能域名
 #   - 条目总数上限 10000
 #
-# 条目数：6903
+# 条目数：6916
 
 002777.xyz
 003store.com
@@ -73,6 +73,7 @@
 0hr4wyjfv3.com
 0i2nax2di.com
 0ihw4ipvm5.com
+0jbyj9d2l.com
 0jghm60qg.com
 0kl9n3q2b.com
 0kplffrs42.com
@@ -917,6 +918,7 @@
 9v7sbm9zc.com
 9vmbje748.com
 9wkvbvm90.com
+9xxne23lm.com
 9yspkomgq.com
 9z6p1shhsh.top
 a.10tianqi.com
@@ -3589,6 +3591,7 @@ j3idyosut.com
 j3ossmqgmc.com
 j4s12kfavg.com
 j59g6ff5k.com
+j5gv7t9sv.com
 j5sgdum5n4.com
 j694fx3bp.com
 j6gi9jgjpb.com
@@ -3678,6 +3681,7 @@ jqsex.com
 jqszhz7wo.com
 jquery.envi-met.com.cn
 jqz8z7gqxw.com
+jqzck6m0vv.com
 jr9v5lx1ro.com
 jrge.cn
 js-agent.newrelic.com
@@ -4229,6 +4233,7 @@ mm.paizi.net
 mm.wxc.cc
 mmp-api.itpub.cloud
 mmp001.scalemonk.com
+mn3hdpe1y.com
 mnnmnn.com
 mnwor.xuanlishi.com
 mo-tuo.com
@@ -4369,6 +4374,7 @@ n8bpikx1mt.com
 n8g1kvtmrf.com
 n906n29tm.com
 na50e68jx.com
+nah9b3ag8.com
 nahdlvqwqkzxby.com
 nahg4lhbr.com
 naivety48.com
@@ -5034,6 +5040,7 @@ quince22.top
 qujishu.com
 qunphoty.com
 quoits96.top
+quotient68.com
 quotient75.com
 quu175kt3.com
 quudraidfg.com
@@ -5103,6 +5110,7 @@ rdntpbeivqbjhi.com
 re.taotaosou.com
 re0rlupcz.com
 recount57.com
+rectangle20.com
 rectangle99.com
 rectangular10.com
 rectangular18.com
@@ -5319,6 +5327,7 @@ screen.buzzvil.com
 script-bd.baixing.net
 sd0ycgs3n0.com
 sdd.hi1718.com
+sdgugmgkcwtaij.com
 sdk-api-v1.singular.net
 sdk-api.kidoz.net
 sdk-orion.appboy.com
@@ -5779,6 +5788,7 @@ tu3168509469.cc
 tu3921276844.cc
 tu4038097360.cc
 tu6767109513.cc
+tu6boqunqq.com
 tubemogul.com
 tupmsen.com
 turcailnt.com
@@ -5863,6 +5873,7 @@ u7lb6db41.com
 u8jlui323.com
 u8rnuky6e.com
 u90p9zk9r7.com
+uaazwczowtfswj.com
 ub1.job592.com
 ub6weu52p.com
 ubeeludrt.com
@@ -5921,6 +5932,7 @@ ulpsd9qmja.com
 ultraadserver.com
 ulx1cpf68.com
 umbel.com
+umd8dz8x9.com
 umeng.com
 umengacs.m.taobao.com
 umengjmacs.m.taobao.com
@@ -6831,6 +6843,7 @@ zig1te84n.com
 zinoe.cn
 zipobfrcbodrvq.com
 zisu.cn.com
+zitdymshto.icu
 zither89.com
 ziweuu.com
 ziwl05nrf1.com
