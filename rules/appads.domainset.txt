@@ -1,14 +1,14 @@
 # iOS App 专用广告拦截清单（DOMAIN-SET 格式，后缀匹配含子域）
 # 本文件由 scripts/build_appads.py 自动生成，请勿手工编辑。
 # 重新生成：python3 scripts/build_appads.py
-# 生成时间：2026-11-26T01:54:45Z
+# 生成时间：2026-11-27T01:52:20Z
 #
 # 来源分层（按优先级）：
 #   1. AdGuard Mobile Ads filter — filters/11.txt（全量收录，共 933 条）
 #      移动端第三方广告网络，本清单的基础层
 #   2. AdGuard Tracking Protection — filters/3.txt（只取子集，未整体引入）
-#      隐私/归因 SDK 160 条；常见广告交易平台 69 条
-#   3. AdGuard Chinese filter — filters/224.txt（国内广告地址，取用 5758 条补足上限）
+#      隐私/归因 SDK 161 条；常见广告交易平台 69 条
+#   3. AdGuard Chinese filter — filters/224.txt（国内广告地址，取用 5768 条补足上限）
 #
 # 处理规则：
 #   - 只接受 ||domain^ 与 ||domain^$third-party 形式；丢弃 URL/路径/通配规则
@@ -18,7 +18,7 @@
 #   - 剔除 Apple 域名与已知会打断支付/登录的功能域名
 #   - 条目总数上限 10000
 #
-# 条目数：6916
+# 条目数：6927
 
 002777.xyz
 003store.com
@@ -719,6 +719,7 @@
 7996epzfh.com
 79n4cubmu8.com
 79ssr9d244.com
+7a9m8uas28.com
 7asx1bxaw.com
 7c96k2gysn.com
 7car.com.cn
@@ -1360,6 +1361,7 @@ agent.tamedia.com.tw
 agkn.com
 agricultural64.top
 ahfaihethh.com
+ahfhmvd0vf.com
 ahm.135320.com
 ahoy-internal-ads-hv.b-cdn.net
 ahtjhe1bka.com
@@ -1532,6 +1534,7 @@ appimg.0575bbs.com
 apple.www.letv.com
 applifier.com
 applovin.com
+appmetrica.sovcombank.ru
 appmetrica.yandex.com
 appmetrica.yandex.net
 appnext-a.akamaihd.net
@@ -2158,6 +2161,7 @@ corkscrew33.com
 cos1999.top
 cosecant36.com
 cosiskkm.com
+coty7m14cr.com
 coywadlw9r.com
 cp.7y7.com
 cp.jfcdns.com
@@ -4215,6 +4219,7 @@ mixpanel-proxy-ivbdkvonca-uc.a.run.app
 mixpanel-proxy.ted.com
 mixpanel.tigocloud.net
 mj2fdb4kdq.com
+mjf6aq4jua.com
 mjpauup21.com
 mjursnb.com
 mjvb60t4g.com
@@ -4481,12 +4486,14 @@ no99z05m4p.com
 notlwkjg8.com
 novostimira.biz
 noxagile.duapp.com
+noxtzixkdg.com
 npgjij.cn
 nplsxlziftfbnk.com
 npunr.cn
 npuwalz.com
 npzc1yzag7.com
 npzjrlkmmjjtxe.com
+nq2b2hvkni.com
 nq6jitu4y.com
 nqrsdhemqmfdry.com
 nqwgvk.cn
@@ -5033,6 +5040,7 @@ qtevriko.com
 qtozietgp.com
 qttroiey.com
 qty00vcqh8.com
+quadrant59.com
 quarterdeck96.top
 qucxwvt.com
 questionmarket.com
@@ -5165,6 +5173,7 @@ rib0nsgx6.com
 richh.cn
 richlifeads.ru
 ridfvncgizfjlq.com
+riilabmhzs.icu
 rio9s1zdpd.com
 riptgxsype.com
 riveter29.com
@@ -5282,6 +5291,7 @@ s11henoe9i.com
 s17uqjk39o.com
 s1gr2198h.com
 s2dln6sdu.com
+s2glduwz1.com
 s2plb194m.com
 s2s.adjust.com
 s2v36b902.com
@@ -5358,6 +5368,7 @@ service-ad-image-ga.prd.pluto.tv
 sessionm.com
 setting.rayjump.com
 sf5yzh4yqz.com
+sfajs30mmk.com
 sfzjk57ov.com
 sga2frwjjh.com
 sgg.southcn.com
